@@ -33,6 +33,15 @@ namespace NBC_TextGame
             }
         }
 
+        public void SellItem(int index, Character player)
+        {
+            Item item = player.inven[index];
+            player.gold += (int)(item.price * 0.8);
+            AddItem(item);
+            player.inven.RemoveAt(index);
+            SaveOptions();
+        }
+
 
         public void SaveOptions()
         {
@@ -44,6 +53,8 @@ namespace NBC_TextGame
         public void LoadOptions()
         {
             string path = System.IO.Directory.GetCurrentDirectory() + "/shop.json";
+            if (!File.Exists(path)) SaveOptions();
+
             string json = File.ReadAllText(path);
 
             List<Item> items = JsonConvert.DeserializeObject<List<Item>>(json);

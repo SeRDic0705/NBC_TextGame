@@ -162,10 +162,10 @@ class Program
 
         foreach (Item item in shop.items)
         {
-            Console.WriteLine($"- {item.ToString()} | {item.price}");
+            Console.WriteLine($"- {item.ToString()} | {item.price} G");
         }
 
-        Console.WriteLine("\n1. 아이템 구매\n0. 나가기\n");
+        Console.WriteLine("\n1. 아이템 구매\n2. 아이템 판매\n0. 나가기\n");
 
         while (true)
         {
@@ -177,6 +177,9 @@ class Program
                     break;
                 case ConsoleKey.D1:
                     BuyItem();
+                    break;
+                case ConsoleKey.D2:
+                    SellItem();
                     break;
                 default:
                     Console.WriteLine("잘못된 입력입니다.");
@@ -203,7 +206,7 @@ class Program
             int i = 1;
             foreach (Item item in shop.items)
             {
-                Console.WriteLine($"{i++} {item.ToString()} | {item.price}");
+                Console.WriteLine($"{i++} {item.ToString()} | {item.price} G");
             }
 
             Console.WriteLine("\n0. 나가기\n");
@@ -219,8 +222,41 @@ class Program
                 if (num == 0) break;
                 shop.BuyItem(num - 1, player);
             }
+        } 
+    }
+
+    static void SellItem()
+    {
+        while (true)
+        {
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("상점 - 아이템 판매");
+            Console.ResetColor();
+            Console.WriteLine("필요한 아이템을 얻을 수 있는 상점입니다.\n");
+            Console.WriteLine("[보유 골드]");
+            Console.WriteLine($"{player.gold} G\n");
+
+            int i = 1;
+            foreach (Item item in player.inven)
+            {
+                Console.WriteLine($"{i++} {item.ToString()} | {(int)(item.price * 0.8)} G");
+            }
+
+            Console.WriteLine("\n0. 나가기\n");
+
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
+
+            if (!int.TryParse(Console.ReadLine(), out int num) || num - 1 > player.inven.Count || num < 0)
+            {
+                Console.WriteLine("잘못된 입력입니다");     // fix: Console.Clear 후 출력하도록 수정할 것
+            }
+            else
+            {
+                if (num == 0) break;
+                shop.SellItem(num - 1, player);
+            }
         }
-        
     }
 
 
@@ -234,6 +270,8 @@ class Program
     static void LoadGame()
     {
         string path = System.IO.Directory.GetCurrentDirectory() + "/player.json";
+        if(!File.Exists(path)) SaveGame();
+
         string json = File.ReadAllText(path);
 
         Character data = JsonConvert.DeserializeObject<Character>(json);
