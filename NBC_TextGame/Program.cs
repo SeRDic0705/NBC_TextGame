@@ -1,9 +1,6 @@
-﻿
-using NBC_TextGame;
+﻿using NBC_TextGame;
 using Newtonsoft.Json;
-using System;
-using System.Text;
-using System.Xml.Linq;
+
 
 class Program
 {
